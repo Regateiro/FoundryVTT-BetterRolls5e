@@ -492,7 +492,7 @@ export class RollFields {
 				if (textFieldValue) {
 					return [{
 						type: "description",
-						content: TextEditor.enrichHTML(textFieldValue ?? '').trim()
+						content: (await TextEditor.enrichHTML(textFieldValue ?? '', {async: true})).trim()
 					}];
 				}
 				break;

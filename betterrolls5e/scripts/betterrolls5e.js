@@ -340,7 +340,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 			case 'infoRoll':
 				fields.push(["header"], ["desc"]); params.consume = false; params.properties = true; params.infoOnly = true; break;
 			case 'vanillaRoll':
-				item.roll({ vanilla: true });
+				item.use({ vanilla: true });
 		}
 
 		if (ev.target.dataset.action !== 'vanillaRoll') {
@@ -397,7 +397,7 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 		let item = actor.items.get(itemId);
 		if (!item) { return ui.notifications.warn(`${i18n("br5e.error.noItemWithId")}`); }
 		if (actor.permission != 3) { return ui.notifications.warn(`${i18n("br5e.error.noActorPermission")}`); }
-		return item.roll({ vanilla: true, event });
+		return item.use({ vanilla: true, event });
 	};
 
 	// Performs a Quick Roll, searching for an item in the controlled actor by name.
@@ -407,7 +407,7 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 		let item = actor ? actor.items.find(i => i.name === itemName) : null;
 		if (!actor) { return ui.notifications.warn(`${i18n("br5e.error.noSelectedActor")}`); }
 		else if (!item) { return ui.notifications.warn(`${actor.name} ${i18n("br5e.error.noKnownItemOnActor")} ${itemName}`); }
-		return item.roll({ vanilla: false, event });
+		return item.use({ vanilla: false, event });
 	};
 
 	// Performs a Quick Roll, searching the actor and item by ID.
@@ -417,7 +417,7 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 		let item = actor.items.get(itemId);
 		if (!item) { return ui.notifications.warn(`${i18n("br5e.error.noItemWithId")}`); }
 		if (actor.permission != 3) { return ui.notifications.warn(`${i18n("br5e.error.noActorPermission")}`); }
-		return item.roll({ vanilla: false, event });
+		return item.use({ vanilla: false, event });
 	};
 
 	// Performs a Quick Roll, searching the actor and item by name.
@@ -427,7 +427,7 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 		let item = actor.items.find(i => i.name === itemName);
 		if (!item) { return ui.notifications.warn(`${actor.name} ${i18n("br5e.error.noKnownItemOnActor")} ${itemName}`); }
 		if (actor.permission != 3) { return ui.notifications.warn(`${i18n("br5e.error.noActorPermission")}`); }
-		return item.roll({ vanilla: false, event });
+		return item.use({ vanilla: false, event });
 	};
 
 	// Returns if an event should have its corresponding Quick Roll be an Alt Roll.
