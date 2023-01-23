@@ -1,6 +1,5 @@
 import { isAttack, isSave, isCheck } from "./betterrolls5e.js";
 import {
-	dnd5e,
 	i18n,
 	DiceCollection,
 	ActorUtils,
@@ -195,7 +194,7 @@ export class CustomItemRoll {
 	}
 
 	static fromMessage(message) {
-		const data = message.data.flags.betterrolls5e;
+		const data = message.flags.betterrolls5e;
 		const roll = new CustomItemRoll(null, data?.params ?? {}, data?.fields ?? []);
 		roll._currentId = -1;
 		roll.messageId = message.id;
@@ -629,7 +628,7 @@ export class CustomItemRoll {
 		let placeTemplate = params.useTemplate;
 
 		// Determine spell level and configuration settings
-		if (item?.data.type === "spell" && consume && !params.slotLevel) {
+		if (item?.type === "spell" && consume && !params.slotLevel) {
 			const config = await this.configureSpell();
 			if (config === "error") {
 				this.error = true;
@@ -642,7 +641,7 @@ export class CustomItemRoll {
 		// Update item casted level property to match the slot level
 		// This ensure things like the property list showing the correct spell level
 		if (item && this.params.slotLevel) {
-			item.data.data.castedLevel = this.params.slotLevel;
+			item.system.castedLevel = this.params.slotLevel;
 		}
 
 		// Show Advantage/Normal/Disadvantage dialog if enabled
@@ -684,7 +683,7 @@ export class CustomItemRoll {
 		let ammoUpdate = {};
 		if (actor && item) {
 			const request = this.params.useCharge;
-			const consume = item.data.data.consume;
+			const consume = item.system.consume;
 			if (request.resource && consume?.type === "ammo") {
 				ammo = actor.items.get(consume.target);
 				const usage = item._getUsageUpdates({consumeResource: true});
@@ -801,9 +800,9 @@ export class CustomItemRoll {
 		// then embed the item data in the chat message
 		// We retrieve the private internal cached actor/items so that this method can stay synchronous.
 		const { _actor, _item } = this;
-		const wasConsumed = (_item?.data.type === "consumable") && !_actor.items.has(_item.id);
-		if (wasConsumed || (_item && !_item.id && _item?.data.effects.find(ae => !ae.data.transfer))) {
-			flags["dnd5e.itemData"] = _item.data;
+		const wasConsumed = (_item?.type === "consumable") && !_actor.items.has(_item.id);
+		if (wasConsumed || (_item && !_item.id && _item?.effects.find(ae => !ae.data.transfer))) {
+			flags["dnd5e.itemData"] = _item;
 		}
 
 		// Allow the roll to popout
@@ -959,7 +958,7 @@ export class CustomItemRoll {
 	async _processField(field) {
 		const actor = await this.getActor();
 		const item = await this.getItem();
-		let consume = item?.data.data.consume;
+		let consume = item?.system.consume;
 		const ammo = consume?.type === "ammo" ? actor?.items.get(consume.target) : null;
 
 		const metadata = {
@@ -1054,8 +1053,8 @@ export class CustomItemRoll {
 		const item = await this.getItem();
 		if (!item) return;
 
-		let itemData = item.data.data,
-			flags = item.data.flags,
+		let itemData = item.system,
+			flags = item.flags,
 			brFlags = flags.betterRolls5e,
 			preset = this.params.preset,
 			properties = false,
@@ -1133,7 +1132,7 @@ export class CustomItemRoll {
 		let consume = false;
 		let placeTemplate = false;
 
-		const data = item.data.data;
+		const data = item.system;
 
 		// Only run the dialog if the spell is not a cantrip
 		const isSpell = item.type === "spell";
@@ -1173,7 +1172,7 @@ export class CustomItemRoll {
 		}
 
 		if (spellLevel == "pact") {
-			spellLevel = getProperty(actor, `data.data.spells.pact.level`) || spellLevel;
+			spellLevel = getProperty(actor, `system.spells.pact.level`) || spellLevel;
 		}
 
 		// Update params temporarily
@@ -1195,8 +1194,8 @@ export class CustomItemRoll {
 		if (!baseItem || !baseItem.id) return;
 
 		// The error message for spells uses the item level, so we tweak so that it reports correctly
-		const itemLevel = this.params.slotLevel ?? baseItem.data.data.level;
-		const item = baseItem.clone({ "data.level": itemLevel }, { keepId: true });
+		const itemLevel = this.params.slotLevel ?? baseItem.system.level;
+		const item = baseItem.clone({ "system.level": itemLevel }, { keepId: true });
 
 		let actorUpdates = {};
 		let itemUpdates = {};
@@ -1210,7 +1209,7 @@ export class CustomItemRoll {
 			resourceUpdates = { ...resourceUpdates, ...(updates.resourceUpdates ?? {})};
 		}
 
-		const itemData = item.data.data;
+		const itemData = item.system;
 		const hasUses = !!(Number(itemData.uses?.value) || itemData.uses?.per); // Actual check to see if uses exist on the item, even if params.useCharge.use == true
 		const hasResource = !!(itemData.consume?.target); // Actual check to see if a resource is entered on the item, even if params.useCharge.resource == true
 
@@ -1268,10 +1267,10 @@ export class CustomItemRoll {
 			itemUpdates["data.recharge.charged"] = false;
 		}
 
-		if (!isObjectEmpty(itemUpdates)) await item.update(itemUpdates);
-		if (!isObjectEmpty(actorUpdates)) await actor.update(actorUpdates);
+		if (!isEmpty(itemUpdates)) await item.update(itemUpdates);
+		if (!isEmpty(actorUpdates)) await actor.update(actorUpdates);
 
-		if (!isObjectEmpty(resourceUpdates)) {
+		if (!isEmpty(resourceUpdates)) {
 			const resource = actor.items.get(itemData.consume?.target);
 			if (resource) await resource.update(resourceUpdates);
 		}

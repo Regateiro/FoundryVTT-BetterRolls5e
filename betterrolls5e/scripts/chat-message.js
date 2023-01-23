@@ -32,7 +32,7 @@ export class BetterRollsChatCard {
 		// and we can't do anything except rely on closures to handle those events.
 		this.id = message.id;
 		this.roll = CustomItemRoll.fromMessage(message);
-		this.speaker = game.actors.get(message.data.speaker.actor);
+		this.speaker = game.actors.get(message.speaker.actor);
 		message.BetterRoll = this.roll;
 
 		// Hide Save DCs
@@ -238,7 +238,7 @@ export class BetterRollsChatCard {
 	async applyDamage(actor, damageType, damage, modifier) {
 		if (damageType === "temphp" && modifier < 0) {
 			const healing = Math.abs(modifier) * damage;
-			const actorData = actor.data.data;
+			const actorData = actor.system;
 			if (actorData.attributes.hp.temp > 0) {
 				const overwrite = await Dialog.confirm({
 					title: i18n("br5e.chat.damageButtons.tempOverwrite.title"),
@@ -356,11 +356,11 @@ export class BetterRollsChatCard {
 			const roll = this.roll;
 			let item = await roll.getItem();
 			if (data.ammo) {
-				item = item.parent.items.get(item.data.data.consume.target)
+				item = item.parent.items.get(item.system.consume.target)
 			}
 
 			let targets
-			if (item.data.data?.target?.type === 'self' && canvas.tokens?.controlled?.length) {
+			if (item.system?.target?.type === 'self' && canvas.tokens?.controlled?.length) {
 				targets = Utils.getTargetTokens();
 			} else {
 				targets = game.user.targets.size ? game.user.targets : Utils.getTargetTokens();

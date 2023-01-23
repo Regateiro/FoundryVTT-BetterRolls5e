@@ -9,17 +9,17 @@ export async function migrate() {
 		if (isNewerVersion("1.6.12", lastVersion)) {
 			numItemsUpdated += await iterAndUpdateItems((item) => {
 				const updates = {};
-				const brFlags = item.data.flags.betterRolls5e;
+				const brFlags = item.flags.betterRolls5e;
 				if (!brFlags) return;
 
 				const critRange = brFlags.critRange?.value;
-				if (critRange && !item.data.data.critical?.threshold) {
-					updates["data.critical.threshold"] = Number(critRange) || null;
+				if (critRange && !item.system.critical?.threshold) {
+					updates["system.critical.threshold"] = Number(critRange) || null;
 				}
 
 				const critDamage = brFlags.critDamage?.value;
-				if (critDamage && !item.data.data.critical?.critDamage) {
-					updates["data.critical.damage"] = item.data.data.damage.parts[critDamage]?.[0];
+				if (critDamage && !item.system.critical?.critDamage) {
+					updates["system.critical.damage"] = item.system.damage.parts[critDamage]?.[0];
 				}
 
 				if ("critRange" in brFlags) {
@@ -114,7 +114,7 @@ export async function iterAndUpdateItems(callback) {
 
 export async function migrateChatMessage(message) {
 	if (!game.user.isGM) return;
-	const brFlags = message.data.flags.betterrolls5e;
+	const brFlags = message.flags.betterrolls5e;
 	if (!brFlags) return false;
 
 	let updated = false;

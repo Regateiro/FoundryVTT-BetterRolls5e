@@ -1,4 +1,4 @@
-import { dnd5e, i18n, ActorUtils, ItemUtils, Utils } from "./utils/index.js";
+import { i18n, ActorUtils, ItemUtils, Utils } from "./utils/index.js";
 import { BRSettings, getSettings } from "./settings.js";
 import { isSave } from "./betterrolls5e.js";
 
@@ -27,7 +27,7 @@ export class RollFields {
 		const actor = options?.actor ?? item?.actor;
 		const img = options.img ?? item?.img ?? ActorUtils.getImage(actor);
 		let title = options.title ?? item?.name ?? actor?.name ?? '';
-		if (item?.data.type === "spell" && slotLevel && slotLevel != item.data.data.level) {
+		if (item?.type === "spell" && slotLevel && slotLevel != item.system.level) {
 			title += ` (${dnd5e.spellLevels[slotLevel]})`;
 		}
 
@@ -155,7 +155,7 @@ export class RollFields {
 		// Note that "null" is a valid title, so we can't override that
 		if (typeof title === 'undefined') {
 			title = i18n("br5e.chat.attack");
-			const consume = item?.data.data.consume;
+			const consume = item?.system.consume;
 			if ((consume?.type === 'ammo') && !!actor.items) {
 				const ammo = actor.items.get(consume.target);
 				title += ` [${ammo.name}]`;
@@ -227,8 +227,8 @@ export class RollFields {
 
 		// If no formula was given, derive from the item
 		if (!formula && item) {
-			const itemData = item.data.data;
-			const flags = item.data.flags.betterRolls5e;
+			const itemData = item.system;
+			const flags = item.flags.betterRolls5e;
 
 			if (damageIndex === "other") {
 				formula = itemData.formula;
@@ -248,7 +248,7 @@ export class RollFields {
 				}
 
 				// Add any roll bonuses but only to the first entry
-				const isAmmo = item.data.type === "consumable" && item.data.data.consumableType === "ammo";
+				const isAmmo = item.type === "consumable" && item.system.consumableType === "ammo";
 				if (isFirst && rollData.bonuses && !isAmmo) {
 					const actionType = `${itemData.actionType}`;
 					const bonus = rollData.bonuses[actionType]?.damage;
@@ -327,7 +327,7 @@ export class RollFields {
 
 		// If no formula was given, derive from the item
 		if (!formula && item) {
-			formula = item.data.data.critical?.damage;
+			formula = item.system.critical?.damage;
 		}
 
 		// Require a formula to continue
@@ -385,7 +385,7 @@ export class RollFields {
 
 		// If all, damage indices between a sequential list from 0 to length - 1
 		if (index === "all") {
-			const numEntries = item.data.data.damage.parts.length;
+			const numEntries = item.system.damage.parts.length;
 			index = [...Array(numEntries).keys()];
 		}
 
@@ -412,7 +412,7 @@ export class RollFields {
 
 		// Determine whether the DC should be hidden
 		const hideDCSetting = getSettings(settings).hideDC;
-		const hideDC = (hideDCSetting == "2" || (hideDCSetting == "1" && actor.data.type == "npc"));
+		const hideDC = (hideDCSetting == "2" || (hideDCSetting == "1" && actor.type == "npc"));
 
 		return { type: "button-save", hideDC, ...saveData };
 	}
@@ -452,7 +452,7 @@ export class RollFields {
 
 				// Only add ammo damage if the ammunition is a consumable with type ammo
 				const ammo = data.ammo;
-				if (ammo.data.type !== "consumable" || ammo.data.data.consumableType !== "ammo") {
+				if (ammo.type !== "consumable" || ammo.system.consumableType !== "ammo") {
 					return [];
 				}
 
@@ -488,7 +488,7 @@ export class RollFields {
 			case 'description':
 			case 'desc':
 			case 'text':
-				const textFieldValue = data.text ?? data.content ?? item?.data.data.description.value;
+				const textFieldValue = data.text ?? data.content ?? item?.system.description.value;
 				if (textFieldValue) {
 					return [{
 						type: "description",
@@ -497,7 +497,7 @@ export class RollFields {
 				}
 				break;
 			case 'flavor':
-				const message = data?.text ?? item.data.data.chatFlavor;
+				const message = data?.text ?? item.system.chatFlavor;
 				if (message) {
 					return [{
 						type: "description",

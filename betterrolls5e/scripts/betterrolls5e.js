@@ -1,4 +1,3 @@
-import { DND5E } from "../../../systems/dnd5e/module/config.js";
 import { CustomRoll, CustomItemRoll } from "./custom-roll.js";
 import { i18n, Utils, ItemUtils } from "./utils/index.js";
 import { getSettings } from "./settings.js";
@@ -6,12 +5,12 @@ import { getSettings } from "./settings.js";
 // Returns whether an item makes an attack roll
 export function isAttack(item) {
 	const attacks = ["mwak", "rwak", "msak", "rsak"];
-	return attacks.includes(item.data.data.actionType);
+	return attacks.includes(item.system.actionType);
 }
 
 // Returns whether an item requires a saving throw
 export function isSave(item) {
-	const itemData = item.data.data,
+	const itemData = item.system,
 		isTypeSave = itemData.actionType === "save",
 		hasSaveDC = (itemData.save && itemData.save.ability) ? true : false;
 
@@ -19,7 +18,7 @@ export function isSave(item) {
 }
 
 export function isCheck(item) {
-	return item.data.type === "tool" || typeof item.data.data?.proficient === "number";
+	return item.type === "tool" || typeof item.system?.proficient === "number";
 }
 
 /**
@@ -38,8 +37,6 @@ export function addItemContent(actor, html,
 		addItemSheetButtons(actor, html, null, triggeringElement, buttonContainer)
 	}
 }
-
-const dnd5e = DND5E;
 
 function getQuickDescriptionDefault() {
 	return getSettings().quickDefaultDescriptionEnabled;
@@ -172,8 +169,8 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 	const item = actor.items.get(itemId);
 	ItemUtils.ensureFlags(item);
 
-	const itemData = item.data.data;
-	const flags = item.data.flags.betterRolls5e;
+	const itemData = item.system;
+	const flags = item.flags.betterRolls5e;
 
 	// Check settings
 	const settings = getSettings();
@@ -184,7 +181,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 	let buttonsWereAdded = false;
 
 	// TODO: Make the logic in this switch statement simpler.
-	switch (item.data.type) {
+	switch (item.type) {
 		case 'weapon':
 		case 'feat':
 		case 'spell':
@@ -235,7 +232,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 						let content = `${i}: ${damageString}`;
 
 						if (i === 0 && itemData.damage.versatile) {
-							content += ` (${dnd5e.weaponProperties.ver})`;
+							content += ` (${dnd5e.config.weaponProperties.ver})`;
 						}
 
 						buttons.append(
@@ -355,12 +352,17 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 /** Frontend for macros */
 export function BetterRolls() {
 	async function assignMacro(item, slot, mode) {
+		const actorId = item.uuid.split(".")[1];
+		const itemId = item.uuid.split(".")[3];
+		const actorToRoll = canvas.tokens.placeables.find(t => t.actor?.id === actorId)?.actor ?? game.actors.get(actorId);
+		const itemToRoll = actorToRoll?.items.get(itemId);
+
 		function command() {
 			const vanilla = mode === 'vanillaRoll' ? "true" : "false";
 			return `
-// HotbarUses5e: ActorID="${item.actorId}" ItemID="${item.data._id}"
-const actorId = "${item.actorId}";
-const itemId = "${item.data._id}";
+// HotbarUses5e: ActorID="${item.actorId}" ItemID="${item._id}"
+const actorId = "${actorId}";
+const itemId = "${itemId}";
 const actorToRoll = canvas.tokens.placeables.find(t => t.actor?.id === actorId)?.actor ?? game.actors.get(actorId);
 const itemToRoll = actorToRoll?.items.get(itemId);
 
@@ -378,9 +380,9 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 		let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));
 		if (!macro) {
 			macro = await Macro.create({
-				name: item.data.name,
+				name: itemToRoll.name,
 				type: "script",
-				img: item.data.img,
+				img: itemToRoll.img,
 				command: command(),
 				flags: {"dnd5e.itemMacro": true}
 			}, {displaySheet: false});
@@ -443,20 +445,10 @@ return itemToRoll.roll({ vanilla: ${vanilla} });
 
 	// Prefer token actors over game.actors to avoid consumables and spells being missdepleted.
 	function getActorByName(actorName) {
-		let actor = canvas.tokens.placeables.find(p => p.data.name === actorName)?.actor;
+		let actor = canvas.tokens.placeables.find(p => p.name === actorName)?.actor;
 		if (!actor) actor = game.actors.find(e => e.name === actorName);
 		return actor;
 	}
-
-	Hooks._hooks.hotbarDrop = [(bar, data, slot) => {
-		if ( data.type !== "Item" ) return true;
-		if (event && event.altKey) { // not using isAlt(event) because it's not related to alternative roll
-			assignMacro(data, slot, "vanillaRoll");
-		} else {
-			assignMacro(data, slot, "id");
-		}
-		return false;
-	}].concat(Hooks._hooks.hotbarDrop || []);
 
 	return {
 		version: Utils.getVersion(),

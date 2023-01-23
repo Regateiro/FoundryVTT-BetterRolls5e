@@ -85,3 +85,14 @@ Hooks.on("getChatLogEntryContext", (html, options) => {
 // For whatever reason, this callback is sometimes called with unattached html elements
 Hooks.on("renderChatMessage", BetterRollsChatCard.bind);
 Hooks.on("getChatLogEntryContext", BetterRollsChatCard.addOptions);
+
+
+Hooks.on("hotbarDrop", (bar, data, slot) => {
+	if ( data.type !== "Item" ) return true;
+	if (event && event.altKey) { // not using isAlt(event) because it's not related to alternative roll
+		window.BetterRolls.assignMacro(data, slot, "vanillaRoll");
+	} else {
+		window.BetterRolls.assignMacro(data, slot, "id");
+	}
+	return false;
+});

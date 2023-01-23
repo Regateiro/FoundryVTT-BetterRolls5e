@@ -8,10 +8,10 @@ let activate = false;
  */
 export async function addBetterRollsContent(app, protoHtml) {
 	const item = app.object;
-	const itemData = item.data.data;
+	const itemData = item.system;
 
 	if (item.actor && item.actor.permission < 3) { return; }
-	if (CONFIG.betterRolls5e.validItemTypes.indexOf(item.data.type) == -1) { return; }
+	if (CONFIG.betterRolls5e.validItemTypes.indexOf(item.type) == -1) { return; }
 
 	// Initialize flags. Don't commit to avoid a nested re-render
 	ItemUtils.ensureFlags(item);
@@ -52,7 +52,7 @@ export async function addBetterRollsContent(app, protoHtml) {
 		hasCharge,
 		isAttack: isAttack(item),
 		isSave: isSave(item),
-		flags: item.data.flags,
+		flags: item.flags,
 		damageTypes: CONFIG.betterRolls5e.combinedDamageTypes,
 		altSecondaryEnabled,
 		itemHasTemplate: item.hasAreaTarget
@@ -74,13 +74,13 @@ export async function addBetterRollsContent(app, protoHtml) {
 		const placeholder = game.settings.get("betterrolls5e", "contextReplacesDamage") ? "br5e.settings.label" : "br5e.settings.context";
 
 		damageRolls.forEach((damageRoll, i) => {
-			const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.data.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
+			const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
 
 			damageRoll.after(contextField[0]);
 
 			// Add event listener to delete context when damage is deleted
 			$($($(damageRoll)[0].parentElement).find(`a.delete-damage`)).click(async _ => {
-				const contextFlags = Object.values(item.data.flags.betterRolls5e.quickDamage.context);
+				const contextFlags = Object.values(item.flags.betterRolls5e.quickDamage.context);
 				contextFlags.splice(i, 1);
 				item.update({
 					[`flags.betterRolls5e.quickDamage.context`]: contextFlags,
@@ -89,9 +89,9 @@ export async function addBetterRollsContent(app, protoHtml) {
 		});
 
 		// Add context field for Other Formula field
-		if (getProperty(item, "data.flags.betterRolls5e.quickOther")) {
+		if (getProperty(item, "system.flags.betterRolls5e.quickOther")) {
 			const otherRoll = html.find(`.tab.details .form-fields input[name="data.formula"]`);
-			const otherContextField = $(`<input type="text" name="flags.betterRolls5e.quickOther.context" value="${(item.data.flags.betterRolls5e.quickOther.context || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
+			const otherContextField = $(`<input type="text" name="flags.betterRolls5e.quickOther.context" value="${(item.flags.betterRolls5e.quickOther.context || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
 			if (otherRoll[0]) { otherRoll[0].after(otherContextField[0]); }
 		}
 	}

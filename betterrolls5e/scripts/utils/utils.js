@@ -1,8 +1,5 @@
 import { isSave } from "../betterrolls5e.js";
 import { getSettings } from "../settings.js";
-import { DND5E } from "../../../../systems/dnd5e/module/config.js";
-
-export const dnd5e = DND5E;
 
 /**
  * Shorthand for both game.i18n.format() and game.i18n.localize() depending
@@ -32,7 +29,7 @@ function isMaestroOn() {
 
 export class Utils {
 	static getVersion() {
-		return game.modules.get("betterrolls5e").data.version;
+		return game.modules.get("betterrolls5e").version;
 	}
 
 	/**
@@ -401,7 +398,7 @@ export class ActorUtils {
 
 export class ItemUtils {
 	static getActivationData(item) {
-		const { activation } = item.data.data;
+		const { activation } = item.system;
 		const activationCost = activation?.cost ?? "";
 
 		if (activation?.type && activation?.type !== "none") {
@@ -420,13 +417,13 @@ export class ItemUtils {
 		if (!item) return null;
 
 		// Get item crit, favoring the smaller between it and the actor's crit threshold
-		let itemCrit = item.data.data.critical?.threshold || 20;
-		const characterCrit = ActorUtils.getCritThreshold(item.actor, item.data.type);
+		let itemCrit = item.system.critical?.threshold || 20;
+		const characterCrit = ActorUtils.getCritThreshold(item.actor, item.type);
 		return Math.min(20, characterCrit, itemCrit);
 	}
 
 	static getDuration(item) {
-		const {duration} = item.data.data;
+		const {duration} = item.system;
 
 		if (!duration?.units) {
 			return null;
@@ -436,7 +433,7 @@ export class ItemUtils {
 	}
 
 	static getRange(item) {
-		const { range } = item.data.data;
+		const { range } = item.system;
 
 		if (!range?.value && !range?.units) {
 			return null;
@@ -450,7 +447,7 @@ export class ItemUtils {
 	}
 
 	static getSpellComponents(item) {
-		const { vocal, somatic, material } = item.data.data.components;
+		const { vocal, somatic, material } = item.system.components;
 
 		let componentString = "";
 
@@ -463,7 +460,7 @@ export class ItemUtils {
 		}
 
 		if (material) {
-			const materials = item.data.data.materials;
+			const materials = item.system.materials;
 			componentString += i18n("br5e.chat.abrMaterial");
 
 			if (materials.value) {
@@ -476,7 +473,7 @@ export class ItemUtils {
 	}
 
 	static getTarget(item) {
-		const { target } = item.data.data;
+		const { target } = item.system;
 
 		if (!target?.type) {
 			return null;
@@ -492,9 +489,9 @@ export class ItemUtils {
 	 * @param {Item} item item to update flags for
 	 */
 	static ensureFlags(item) {
-		const flags = this.createFlags(item?.data);
+		const flags = this.createFlags(item?.system);
 		if (!flags) return;
-		item.data.flags.betterRolls5e = flags;
+		item.flags.betterRolls5e = flags;
 	}
 
 	/**
@@ -545,7 +542,7 @@ export class ItemUtils {
 	 */
 	static hasMaestroSound(item) {
 		if (!item) return false;
-		return (isMaestroOn() && item.data.flags.maestro && item.data.flags.maestro.track) ? true : false;
+		return (isMaestroOn() && item.flags.maestro && item.flags.maestro.track) ? true : false;
 	}
 
 	/**
@@ -555,7 +552,7 @@ export class ItemUtils {
 	 * @param {item?} item
 	 */
 	static getExtraCritDice(item) {
-		if (item?.actor && item?.data.type === "weapon") {
+		if (item?.actor && item?.type === "weapon") {
 			return ActorUtils.getMeleeExtraCritDice(item.actor);
 		}
 
@@ -683,14 +680,14 @@ export class ItemUtils {
 	 * @returns {string | null} the formula if scaled, or null if its not a spell
 	 */
 	static scaleDamage(item, spellLevel, damageIndex, rollData) {
-		if (item?.data.type === "spell") {
+		if (item?.type === "spell") {
 			const versatile = (damageIndex === "versatile");
 			if (versatile) {
 				damageIndex = 0;
 			}
 
-			let itemData = item.data.data;
-			let actorData = item.actor.data.data;
+			let itemData = item.system;
+			let actorData = item.actor.system;
 
 			const scale = itemData.scaling.formula;
 			let formula = versatile ? itemData.damage.versatile : itemData.damage.parts[damageIndex][0];
@@ -698,7 +695,7 @@ export class ItemUtils {
 
 			// Scale damage from up-casting spells
 			if (itemData.scaling.mode === "cantrip") {
-				const level = item.actor.data.type === "character" ?
+				const level = item.actor.type === "character" ?
 					actorData.details.level :
 					(actorData.details.spellLevel || actorData.details.cr);
 				item._scaleCantripDamage(parts, scale, level, rollData);
@@ -719,7 +716,7 @@ export class ItemUtils {
 	static getPropertyList(item) {
 		if (!item) return [];
 
-		const data = item.data.data;
+		const data = item.system;
 		let properties = [];
 
 		const range = ItemUtils.getRange(item);
@@ -727,7 +724,7 @@ export class ItemUtils {
 		const activation = ItemUtils.getActivationData(item)
 		const duration = ItemUtils.getDuration(item);
 
-		switch(item.data.type) {
+		switch(item.type) {
 			case "weapon":
 				properties = [
 					dnd5e.weaponTypes[data.weaponType],
@@ -738,7 +735,7 @@ export class ItemUtils {
 				];
 				for (const prop in data.properties) {
 					if (data.properties[prop] === true) {
-						properties.push(dnd5e.weaponProperties[prop]);
+						properties.push(dnd5e.config.weaponProperties[prop]);
 					}
 				}
 				break;
@@ -794,7 +791,7 @@ export class ItemUtils {
 				];
 				break;
 			case "loot":
-				properties = [data.weight ? item.data.totalWeight + " lbs." : null]
+				properties = [data.weight ? item.totalWeight + " lbs." : null]
 				break;
 		}
 		let output = properties.filter(p => (p) && (p.length !== 0) && (p !== " "));
@@ -812,7 +809,7 @@ export class ItemUtils {
 		}
 
 		return {
-			ability: item.data.data?.save?.ability,
+			ability: item.system?.save?.ability,
 			dc: item.getSaveDC()
 		};
 	}

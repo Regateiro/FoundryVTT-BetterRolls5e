@@ -369,9 +369,9 @@ export class Renderer {
 				templates.push(button);
 			}
 
-			const hasAmmo = item?.data.data.consume?.type === "ammo" && item?.data.data.consume?.target;
+			const hasAmmo = item?.system.consume?.type === "ammo" && item?.system.consume?.target;
 			if (hasAmmo) {
-				const ammo = actor.items.get(item.data.data.consume.target);
+				const ammo = actor.items.get(item.system.consume.target);
 				const ammoHasEffects = ammo?.data.effects.find(ae => !ae.data.transfer);
 
 				if (ammoHasEffects) {

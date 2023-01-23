@@ -1,8 +1,7 @@
 import { getSettings } from "../settings.js";
 import { libWrapper } from "./libWrapper.js";
 
-import { d20Roll } from "../../../../systems/dnd5e/module/dice.js";
-import { dnd5e, i18n, Utils } from "../utils/index.js";
+import { i18n, Utils } from "../utils/index.js";
 import { CustomRoll } from "../custom-roll.js";
 
 export function patchCoreFunctions() {
@@ -106,14 +105,14 @@ async function itemRollAttack(defaultRoll, options) {
 	rollConfig.event = options.event;
 
 	// Expanded critical hit thresholds
-	if (( this.data.type === "weapon" ) && flags.weaponCriticalThreshold) {
+	if (( this.type === "weapon" ) && flags.weaponCriticalThreshold) {
 	  rollConfig.critical = parseInt(flags.weaponCriticalThreshold);
-	} else if (( this.data.type === "spell" ) && flags.spellCriticalThreshold) {
+	} else if (( this.type === "spell" ) && flags.spellCriticalThreshold) {
 	  rollConfig.critical = parseInt(flags.spellCriticalThreshold);
 	}
 
 	// Elven Accuracy
-	if ( ["weapon", "spell"].includes(this.data.type) ) {
+	if ( ["weapon", "spell"].includes(this.type) ) {
 	  if (flags.elvenAccuracy && ["dex", "int", "wis", "cha"].includes(this.abilityMod)) {
 		rollConfig.elvenAccuracy = true;
 	  }
