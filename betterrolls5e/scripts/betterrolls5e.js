@@ -301,7 +301,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 		ev.preventDefault();
 		ev.stopPropagation();
 
-		// The arguments compounded into an object and an array of fields, to be served to the roll() function as the params and fields arguments
+		// The arguments compounded into an object and an array of fields, to be served to the use() function as the params and fields arguments
 		const params = {forceCrit: ev.altKey, event: ev};
 		const fields = [];
 		if (params.forceCrit) {
@@ -374,7 +374,7 @@ if (!itemToRoll) {
 	return ui.notifications.warn(game.i18n.format("DND5E.ActionWarningNoItem", { item: itemId, name: actorToRoll?.name ?? "[Not Found]" }));
 }
 
-return itemToRoll.roll({ vanilla: ${vanilla} });
+return itemToRoll.use({ vanilla: ${vanilla} });
 `;
 		}
 		let macro = game.macros.find(m => (m.name === item.name) && (m.command === command));

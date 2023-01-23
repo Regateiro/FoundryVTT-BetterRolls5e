@@ -15,7 +15,7 @@ export function patchCoreFunctions() {
 	}
 
 	const actorProto = "CONFIG.Actor.documentClass.prototype";
-	override("CONFIG.Item.documentClass.prototype.roll", itemRoll);
+	override("CONFIG.Item.documentClass.prototype.use", itemRoll);
 	override("CONFIG.Item.documentClass.prototype.rollAttack", itemRollAttack);
 	override("CONFIG.Item.documentClass.prototype.rollToolCheck", itemRollToolCheck);
 	libWrapper.register("betterrolls5e", `${actorProto}.rollSkill`, actorRollSkill, "MIXED");
@@ -35,7 +35,7 @@ function override(target, fn) {
 }
 
 /**
- * Override for Item5e.roll(). This is an OVERRIDE however we still want
+ * Override for Item5e.use(). This is an OVERRIDE however we still want
  * a passthrough. We need to be lower on priority than Midi.
  * @param {} wrapped
  * @returns
