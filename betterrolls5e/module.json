@@ -11,7 +11,7 @@
     ],
     "url": "https://github.com/RedReign/FoundryVTT-BetterRolls5e/tree/master/betterrolls5e",
     "flags": {},
-    "version": "2.0.0",
+    "version": "2.0.1",
     "minimumCoreVersion": "10",
     "compatibleCoreVersion": "10",
     "compatibility": {
@@ -93,7 +93,7 @@
     "dependencies": [],
     "socket": true,
     "manifest": "https://raw.githubusercontent.com/Regateiro/FoundryVTT-BetterRolls5e/master/betterrolls5e/module.json",
-    "download": "https://github.com/Regateiro/FoundryVTT-BetterRolls5e/releases/download/v2.0.0/module.zip",
+    "download": "https://github.com/Regateiro/FoundryVTT-BetterRolls5e/releases/download/v2.0.1/module.zip",
     "protected": false,
     "coreTranslation": false,
     "minimumSystemVersion": "1.5.2",

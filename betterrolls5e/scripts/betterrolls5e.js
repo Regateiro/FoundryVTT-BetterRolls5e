@@ -203,7 +203,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 
 				buttons.append(
 					createButton({
-						content: `${i18n("br5e.buttons.saveDC")} ${saveData.dc} ${dnd5e.abilities[saveData.ability]}`,
+						content: `${i18n("br5e.buttons.saveDC")} ${saveData.dc} ${CONFIG.DND5E.abilities[saveData.ability]}`,
 						action: "save"
 					})
 				);
@@ -232,7 +232,7 @@ async function addButtonsToItemLi(li, actor, buttonContainer) {
 						let content = `${i}: ${damageString}`;
 
 						if (i === 0 && itemData.damage.versatile) {
-							content += ` (${dnd5e.config.weaponProperties.ver})`;
+							content += ` (${CONFIG.DND5E.weaponProperties.ver})`;
 						}
 
 						buttons.append(

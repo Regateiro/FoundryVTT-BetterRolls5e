@@ -275,7 +275,7 @@ export class ActorUtils {
 	 * @param {Actor} actor
 	 */
 	static isHalfling(actor) {
-		return getProperty(actor, "data.flags.dnd5e.halflingLucky");
+		return getProperty(actor, "flags.dnd5e.halflingLucky");
 	}
 
 	/**
@@ -283,7 +283,7 @@ export class ActorUtils {
 	 * @param {Actor} actor
 	 */
 	static hasReliableTalent(actor) {
-		return getProperty(actor, "data.flags.dnd5e.reliableTalent");
+		return getProperty(actor, "flags.dnd5e.reliableTalent");
 	}
 
 	/**
@@ -291,7 +291,7 @@ export class ActorUtils {
 	 * @param {Actor} actor
 	 */
 	static hasElvenAccuracy(actor) {
-		return getProperty(actor, "data.flags.dnd5e.elvenAccuracy");
+		return getProperty(actor, "flags.dnd5e.elvenAccuracy");
 	}
 
 	/**
@@ -320,7 +320,7 @@ export class ActorUtils {
 	static getCritThreshold(actor, itemType) {
 		if (!actor) return 20;
 
-		const actorFlags = actor.data.flags.dnd5e || {};
+		const actorFlags = actor.flags.dnd5e || {};
 		if (itemType === "weapon" && actorFlags.weaponCriticalThreshold) {
 			return parseInt(actorFlags.weaponCriticalThreshold);
 		} else if (itemType === "spell" && actorFlags.spellCriticalThreshold) {
@@ -402,7 +402,7 @@ export class ItemUtils {
 		const activationCost = activation?.cost ?? "";
 
 		if (activation?.type && activation?.type !== "none") {
-			return `${activationCost} ${dnd5e.abilityActivationTypes[activation.type]}`.trim();
+			return `${activationCost} ${CONFIG.DND5E.abilityActivationTypes[activation.type]}`.trim();
 		}
 
 		return null;
@@ -429,7 +429,7 @@ export class ItemUtils {
 			return null;
 		}
 
-		return `${duration.value ? duration.value : ""} ${dnd5e.timePeriods[duration.units]}`.trim()
+		return `${duration.value ? duration.value : ""} ${CONFIG.DND5E.timePeriods[duration.units]}`.trim()
 	}
 
 	static getRange(item) {
@@ -441,7 +441,7 @@ export class ItemUtils {
 
 		const standardRange = range.value || "";
 		const longRange = (range.long && range.long !== range.value) ? `/${range.long}` : "";
-		const rangeUnit = range.units ? dnd5e.distanceUnits[range.units] : "";
+		const rangeUnit = range.units ? CONFIG.DND5E.distanceUnits[range.units] : "";
 
 		return `${standardRange}${longRange} ${rangeUnit}`.trim();
 	}
@@ -479,8 +479,8 @@ export class ItemUtils {
 			return null;
 		}
 
-		const targetDistance = target.units && target?.units !== "none" ? ` (${target.value} ${dnd5e.distanceUnits[target.units]})` : "";
-		return i18n("Target: ") + dnd5e.targetTypes[target.type] + targetDistance;
+		const targetDistance = target.units && target?.units !== "none" ? ` (${target.value} ${CONFIG.DND5E.distanceUnits[target.units]})` : "";
+		return i18n("Target: ") + CONFIG.DND5E.targetTypes[target.type] + targetDistance;
 	}
 
 	/**
@@ -489,26 +489,26 @@ export class ItemUtils {
 	 * @param {Item} item item to update flags for
 	 */
 	static ensureFlags(item) {
-		const flags = this.createFlags(item?.system);
+		const flags = this.createFlags(item);
 		if (!flags) return;
 		item.flags.betterRolls5e = flags;
 	}
 
 	/**
 	 * Creates the flags that should be assigned to the the item. Does not save to database.
-	 * @param {*} itemData The item.data property to be updated
+	 * @param {*} item The item property to be updated
 	 */
-	static createFlags(itemData) {
-		if (!itemData || CONFIG.betterRolls5e.validItemTypes.indexOf(itemData.type) == -1) { return; }
+	static createFlags(item) {
+		if (!item || CONFIG.betterRolls5e.validItemTypes.indexOf(item.type) == -1) { return; }
 
 		// Initialize flags
-		itemData.flags = itemData.flags ?? {};
-		const baseFlags = duplicate(CONFIG.betterRolls5e.allFlags[itemData.type.concat("Flags")]);
-		let flags = duplicate(itemData.flags.betterRolls5e ?? {});
+		item.flags = item.flags ?? {};
+		const baseFlags = duplicate(CONFIG.betterRolls5e.allFlags[item.type.concat("Flags")]);
+		let flags = duplicate(item.flags.betterRolls5e ?? {});
 		flags = mergeObject(baseFlags, flags ?? {});
 
 		// If quickDamage flags should exist, update them based on which damage formulae are available
-		if (CONFIG.betterRolls5e.allFlags[itemData.type.concat("Flags")].quickDamage) {
+		if (CONFIG.betterRolls5e.allFlags[item.type.concat("Flags")].quickDamage) {
 			let newQuickDamageValues = [];
 			let newQuickDamageAltValues = [];
 
@@ -517,7 +517,7 @@ export class ItemUtils {
 				flags.quickDamage = {type: "Array", value: [], altValue: []};
 			}
 
-			for (let i = 0; i < itemData.data.damage?.parts.length; i++) {
+			for (let i = 0; i < item.system.damage?.parts.length; i++) {
 				newQuickDamageValues[i] = flags.quickDamage.value[i] ?? true;
 				newQuickDamageAltValues[i] = flags.quickDamage.altValue[i] ?? true;
 			}
@@ -727,7 +727,7 @@ export class ItemUtils {
 		switch(item.type) {
 			case "weapon":
 				properties = [
-					dnd5e.weaponTypes[data.weaponType],
+					CONFIG.DND5E.weaponTypes[data.weaponType],
 					range,
 					target,
 					data.proficient ? "" : i18n("Not Proficient"),
@@ -735,7 +735,7 @@ export class ItemUtils {
 				];
 				for (const prop in data.properties) {
 					if (data.properties[prop] === true) {
-						properties.push(dnd5e.config.weaponProperties[prop]);
+						properties.push(CONFIG.DND5E.weaponProperties[prop]);
 					}
 				}
 				break;
@@ -745,8 +745,8 @@ export class ItemUtils {
 				data.isAttack = data.actionType === "attack";
 
 				properties = [
-					dnd5e.spellLevels[data.castedLevel ?? data.level],
-					dnd5e.spellSchools[data.school],
+					CONFIG.DND5E.spellLevels[data.castedLevel ?? data.level],
+					CONFIG.DND5E.spellSchools[data.school],
 					data.components.ritual ? i18n("Ritual") : null,
 					activation,
 					duration,
@@ -776,7 +776,7 @@ export class ItemUtils {
 				break;
 			case "equipment":
 				properties = [
-					dnd5e.equipmentTypes[data.armor.type],
+					CONFIG.DND5E.equipmentTypes[data.armor.type],
 					data.equipped ? i18n("Equipped") : null,
 					data.armor.value ? data.armor.value + " " + i18n("AC") : null,
 					data.stealth ? i18n("Stealth Disadv.") : null,
@@ -785,8 +785,8 @@ export class ItemUtils {
 				break;
 			case "tool":
 				properties = [
-					dnd5e.proficiencyLevels[data.proficient],
-					data.ability ? dnd5e.abilities[data.ability] : null,
+					CONFIG.DND5E.proficiencyLevels[data.proficient],
+					data.ability ? CONFIG.DND5E.abilities[data.ability] : null,
 					data.weight ? data.weight + " lbs." : null,
 				];
 				break;

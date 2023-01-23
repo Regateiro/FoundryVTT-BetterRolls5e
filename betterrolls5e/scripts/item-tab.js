@@ -89,7 +89,7 @@ export async function addBetterRollsContent(app, protoHtml) {
 		});
 
 		// Add context field for Other Formula field
-		if (getProperty(item, "system.flags.betterRolls5e.quickOther")) {
+		if (getProperty(item, "flags.betterRolls5e.quickOther")) {
 			const otherRoll = html.find(`.tab.details .form-fields input[name="data.formula"]`);
 			const otherContextField = $(`<input type="text" name="flags.betterRolls5e.quickOther.context" value="${(item.flags.betterRolls5e.quickOther.context || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
 			if (otherRoll[0]) { otherRoll[0].after(otherContextField[0]); }

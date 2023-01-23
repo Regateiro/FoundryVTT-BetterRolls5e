@@ -62,6 +62,60 @@ function itemRoll(defaultRoll, options) {
 	return card.toMessage({ rollMode, createMessage });
 }
 
+async function d20Roll({
+	parts=[], data={}, event,
+	advantage, disadvantage, critical=20, fumble=1, targetValue,
+	elvenAccuracy, halflingLucky, reliableTalent,
+	fastForward, chooseModifier=false, template, title, dialogOptions,
+	chatMessage=true, messageData={}, rollMode, flavor
+  }={}) {
+  
+	// Handle input arguments
+	const formula = ["1d20"].concat(parts).join(" + ");
+	const {advantageMode, isFF} = CONFIG.Dice.D20Roll.determineAdvantageMode({
+	  advantage, disadvantage, fastForward, event
+	});
+	const defaultRollMode = rollMode || game.settings.get("core", "rollMode");
+	if ( chooseModifier && !isFF ) {
+	  data.mod = "@mod";
+	  if ( "abilityCheckBonus" in data ) data.abilityCheckBonus = "@abilityCheckBonus";
+	}
+  
+	// Construct the D20Roll instance
+	const roll = new CONFIG.Dice.D20Roll(formula, data, {
+	  flavor: flavor || title,
+	  advantageMode,
+	  defaultRollMode,
+	  rollMode,
+	  critical,
+	  fumble,
+	  targetValue,
+	  elvenAccuracy,
+	  halflingLucky,
+	  reliableTalent
+	});
+  
+	// Prompt a Dialog to further configure the D20Roll
+	if ( !isFF ) {
+	  const configured = await roll.configureDialog({
+		title,
+		chooseModifier,
+		defaultRollMode,
+		defaultAction: advantageMode,
+		defaultAbility: data?.item?.ability || data?.defaultAbility,
+		template
+	  }, dialogOptions);
+	  if ( configured === null ) return null;
+	} else roll.options.rollMode ??= defaultRollMode;
+  
+	// Evaluate the configured roll
+	await roll.evaluate({async: true});
+  
+	// Create a Chat Message
+	if ( roll && chatMessage ) await roll.toMessage(messageData);
+	return roll;
+  }
+
 /**
  * Override for Item5e.rollAttack(). Only kicks in if options.chatMessage is off.
  * It is basically an exact copy of the built in rollAttack, except that it doesn't consume ammo.
@@ -75,7 +129,7 @@ async function itemRollAttack(defaultRoll, options) {
 		return defaultRoll.bind(this)(options);
 	}
 
-	const flags = this.actor.data.flags.dnd5e || {};
+	const flags = this.actor.flags.dnd5e || {};
 	if ( !this.hasAttack ) {
 	  throw new Error("You may not place an Attack Roll with this Item.");
 	}
@@ -150,7 +204,7 @@ async function actorRollSkill(original, skillId, options) {
 		...Utils.getRollState(options),
 	});
 
-	return CustomRoll._fullRollActor(this, i18n(dnd5e.skills[skillId]), roll);
+	return CustomRoll._fullRollActor(this, i18n(CONFIG.DND5E.skills[skillId]), roll);
 }
 
 async function actorRollAbilityTest(original, ability, options) {
@@ -165,7 +219,7 @@ async function actorRollAbilityTest(original, ability, options) {
 		...Utils.getRollState(options),
 	});
 
-	const label = `${i18n(dnd5e.abilities[ability])} ${i18n("br5e.chat.check")}`;
+	const label = `${i18n(CONFIG.DND5E.abilities[ability])} ${i18n("br5e.chat.check")}`;
 	return CustomRoll._fullRollActor(this, label, roll);
 }
 
@@ -181,6 +235,6 @@ async function actorRollAbilitySave(original, ability, options) {
 		...Utils.getRollState(options),
 	});
 
-	const label = `${i18n(dnd5e.abilities[ability])} ${i18n("br5e.chat.save")}`;
+	const label = `${i18n(CONFIG.DND5E.abilities[ability])} ${i18n("br5e.chat.save")}`;
 	return CustomRoll._fullRollActor(this, label, roll);
 }

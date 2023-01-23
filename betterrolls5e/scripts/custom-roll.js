@@ -61,10 +61,10 @@ export class CustomRoll {
 	 * @param {FullRollActorParams} params parameters
 	 */
 	static async rollSkill(actor, skill, params={}) {
-		if (!(skill in dnd5e.skills)) {
+		if (!(skill in CONFIG.DND5E.skills)) {
 			throw new Error(`Better Rolls | Skill ${skill} does not exist. Valid values can be found in CONFIG.DND5E.skills`);
 		}
-		const label = i18n(dnd5e.skills[skill]);
+		const label = i18n(CONFIG.DND5E.skills[skill]);
 		const formula = (await ActorUtils.getSkillCheckRoll(actor, skill)).formula;
 		return CustomRoll._fullRollActor(actor, label, formula, "skill", params);
 	}
@@ -97,7 +97,7 @@ export class CustomRoll {
 	 * @param {FullRollActorParams} params
 	 */
 	static async rollAttribute(actor, ability, rollType, params={}) {
-		const label = dnd5e.abilities[ability];
+		const label = CONFIG.DND5E.abilities[ability];
 
 		let titleString;
 		let formula = "";
@@ -265,7 +265,7 @@ export class CustomItemRoll {
 		}
 
 		const actor = await this.getActor();
-		const Item5e = game.dnd5e.entities.Item5e;
+		const Item5e = game.dnd5e.documents.Item5e;
 		const item = storedData && actor ? Item5e.createOwned(storedData, actor) : actor?.items.get(this.itemId);
 		if (item) {
 			console.info(`BetterRolls | Card loaded existing item data ${item.name}`);
