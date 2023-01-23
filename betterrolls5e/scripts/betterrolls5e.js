@@ -134,7 +134,7 @@ export async function addItemSheetButtons(actor, html, data, triggeringElement =
 	// adding an event for when the description is shown
 	html.find(triggeringElement).click(event => {
 		let li = $(event.currentTarget).parents(".item");
-		addButtonsToItemLi(li, actor, buttonContainer);
+		setTimeout(function() {addButtonsToItemLi(li, actor, buttonContainer);}, 0);
 	});
 
 	for (let element of html.find(triggeringElement)) {
