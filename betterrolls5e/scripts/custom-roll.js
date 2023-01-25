@@ -562,7 +562,7 @@ export class CustomItemRoll {
 
 		// Calculate required number of rolls
 		let numRolls = Math.max(multiroll.entries?.length, 2);
-		if (numRolls == 2 && multiroll.elvenAccuracy && rollState !== "lowest") {
+		if (numRolls == 2 && (multiroll.elvenAccuracy || multiroll.greaterRage || multiroll.bladeMastery) && rollState !== "lowest") {
 			numRolls = 3;
 		}
 
@@ -1146,7 +1146,7 @@ export class CustomItemRoll {
 				extracted = pick(data, propsToRemove);
 				propsToRemove.forEach((prop) => delete data[prop]);
 
-				const spellFormData = await game.dnd5e.applications.AbilityUseDialog.create(item);
+				const spellFormData = await game.dnd5e.applications.item.AbilityUseDialog.create(item);
 				if (!spellFormData) {
 					return "error";
 				}

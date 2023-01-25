@@ -305,6 +305,38 @@ export class ActorUtils {
 	}
 
 	/**
+	 * True if the actor has the Greater Rage feat
+	 * @param {Actor} actor
+	 */
+	static hasGreaterRage(actor) {
+		return getProperty(actor, "flags.dnd5e.greaterRage");
+	}
+	
+	/**
+	 * True if the actor has the Blade Mastery feat
+	 * @param {Actor} actor
+	 */
+	static hasBladeMastery(actor) {
+		return getProperty(actor, "flags.dnd5e.bladeMastery");
+	}
+
+	/**
+	 * True if the actor has blade mastery and the weapon that triggers it.
+	 * @param {Actor} actor
+	 * @param {string} baseItem ability mod shorthand
+	 */
+	static testBladeMastery(actor, baseItem) {
+		return ActorUtils.hasBladeMastery(actor) && [
+			"dagger",
+			"longsword",
+			"shortsword",
+			"scimitar",
+			"rapier",
+			"greatsword"
+		].includes(baseItem);
+	}
+
+	/**
 	 * Returns the number of additional melee extra critical dice.
 	 * @param {*} actor
 	 */
@@ -406,6 +438,10 @@ export class ItemUtils {
 		}
 
 		return null;
+	}
+
+	static getBaseItem(item) {
+		return item.system.baseItem;
 	}
 
 	/**

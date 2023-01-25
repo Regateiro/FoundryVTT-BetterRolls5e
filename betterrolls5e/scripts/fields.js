@@ -44,12 +44,14 @@ export class RollFields {
 	 * @param {RollState?} options.rollState highest or lowest or first or none
 	 * @param {string?} options.rollType metadata param for attack vs damage.
 	 * @param {boolean?} options.elvenAccuracy whether the actor should apply elven accuracy
+	 * @param {boolean?} options.greaterRage whether the actor should apply greater rage
+	 * @param {boolean?} options.bladeMastery whether the actor should apply blade mastery
 	 * @param {boolean?} options.forceCrit optional flag to force a crit result
 	 * @param {BRSettings} options.settings additional settings to override
 	 * @returns {import("./renderer.js").MultiRollDataProps}
 	 */
 	static constructMultiRoll(options={}) {
-		const { critThreshold, title, rollType, elvenAccuracy } = options;
+		const { critThreshold, title, rollType, elvenAccuracy, greaterRage, bladeMastery } = options;
 		if (!options.formula) {
 			console.error("No formula given for multi-roll");
 			return;
@@ -71,7 +73,7 @@ export class RollFields {
 			}
 
 			// Apply elven accuracy
-			if (numRolls == 2 && elvenAccuracy && rollState !== "lowest") {
+			if (numRolls == 2 && (elvenAccuracy || greaterRage || bladeMastery) && rollState !== "lowest") {
 				numRolls = 3;
 			}
 		}
@@ -108,6 +110,8 @@ export class RollFields {
 				title,
 				critThreshold,
 				elvenAccuracy,
+				greaterRage,
+				bladeMastery,
 				rollState,
 				rollType,
 				formula,
@@ -148,6 +152,8 @@ export class RollFields {
 
 		const abilityMod = options.abilityMod ?? item?.abilityMod;
 		const elvenAccuracy = ActorUtils.testElvenAccuracy(actor, abilityMod);
+		const greaterRage = ActorUtils.hasGreaterRage(actor);
+		const bladeMastery = ActorUtils.testBladeMastery(actor, ItemUtils.getBaseItem(item));
 
 		let title = options.title;
 
@@ -181,6 +187,8 @@ export class RollFields {
 			title,
 			critThreshold,
 			elvenAccuracy,
+			greaterRage,
+			bladeMastery,
 			rollType: "attack"
 		});
 	}

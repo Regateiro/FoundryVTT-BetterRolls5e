@@ -38,6 +38,21 @@ Hooks.once("init", () => {
 Hooks.on("ready", async () => {
 	await migrate();
 
+	// Register Extra Character Flags
+	CONFIG.DND5E.characterFlags["bladeMastery"] = {
+		name: "Blade Mastery",
+		hint: "Roll an extra d20 with advantage when using relevant weapons.",
+		section: "Feats",
+		type: Boolean
+	};
+
+	CONFIG.DND5E.characterFlags["greaterRage"] = {
+		name: "Greater Rage",
+		hint: "Roll an extra d20 with advantage on reckless attacks when raging.",
+		section: "Feats",
+		type: Boolean
+	};
+
 	// Make a combined damage type array that includes healing
 	const dnd5e = CONFIG.DND5E;
 	CONFIG.betterRolls5e.combinedDamageTypes = mergeObject(duplicate(dnd5e.damageTypes), dnd5e.healingTypes);

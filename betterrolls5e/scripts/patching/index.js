@@ -65,7 +65,7 @@ function itemRoll(defaultRoll, options) {
 async function d20Roll({
 	parts=[], data={}, event,
 	advantage, disadvantage, critical=20, fumble=1, targetValue,
-	elvenAccuracy, halflingLucky, reliableTalent,
+	elvenAccuracy, greaterRage, bladeMastery, halflingLucky, reliableTalent,
 	fastForward, chooseModifier=false, template, title, dialogOptions,
 	chatMessage=true, messageData={}, rollMode, flavor
   }={}) {
@@ -91,6 +91,8 @@ async function d20Roll({
 	  fumble,
 	  targetValue,
 	  elvenAccuracy,
+	  greaterRage,
+	  bladeMastery,
 	  halflingLucky,
 	  reliableTalent
 	});
@@ -171,6 +173,25 @@ async function itemRollAttack(defaultRoll, options) {
 		rollConfig.elvenAccuracy = true;
 	  }
 	}
+
+	// Blade Mastery
+	if ( ["weapon"].includes(this.type) ) {
+		if (flags.bladeMastery && [
+			"dagger",
+			"longsword",
+			"shortsword",
+			"scimitar",
+			"rapier",
+			"greatsword"
+		].includes(this.system.baseItem)) {
+		  rollConfig.bladeMastery = true;
+		}
+	  }
+	
+	  // Greater Rage
+	  if (flags.greaterRage) {
+		rollConfig.greaterRage = true;
+	  }
 
 	// Apply Halfling Lucky
 	if ( flags.halflingLucky ) rollConfig.halflingLucky = true;
