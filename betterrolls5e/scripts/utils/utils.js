@@ -369,8 +369,8 @@ export class ActorUtils {
 	static getImage(actor) {
 		if (!actor) return null;
 
-		const actorImage = (actor.data.img && actor.data.img !== CONST.DEFAULT_TOKEN && !actor.data.img.includes("*")) ? actor.data.img : false;
-		const tokenImage = actor.token?.data?.img ? actor.token.data.img : actor.data.token.img;
+		const actorImage = (actor.texture?.src && actor.texture.src !== CONST.DEFAULT_TOKEN && !actor.texture.src.includes("*")) ? actor.texture.src : false;
+		const tokenImage = actor.token?.texture?.src ? actor.token.texture.src : actor.token.texture.src;
 
 		switch(game.settings.get("betterrolls5e", "defaultRollArt")) {
 			case "actor":
