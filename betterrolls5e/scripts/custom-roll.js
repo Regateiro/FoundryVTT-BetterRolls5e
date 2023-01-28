@@ -64,7 +64,7 @@ export class CustomRoll {
 		if (!(skill in CONFIG.DND5E.skills)) {
 			throw new Error(`Better Rolls | Skill ${skill} does not exist. Valid values can be found in CONFIG.DND5E.skills`);
 		}
-		const label = i18n(CONFIG.DND5E.skills[skill]);
+		const label = i18n(CONFIG.DND5E.skills[skill].label);
 		const formula = (await ActorUtils.getSkillCheckRoll(actor, skill)).formula;
 		return CustomRoll._fullRollActor(actor, label, formula, "skill", params);
 	}

@@ -225,7 +225,7 @@ async function actorRollSkill(original, skillId, options) {
 		...Utils.getRollState(options),
 	});
 
-	return CustomRoll._fullRollActor(this, i18n(CONFIG.DND5E.skills[skillId]), roll);
+	return CustomRoll._fullRollActor(this, i18n(CONFIG.DND5E.skills[skillId].label), roll);
 }
 
 async function actorRollAbilityTest(original, ability, options) {
