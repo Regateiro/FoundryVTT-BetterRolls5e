@@ -11,8 +11,6 @@
     "br5e.imageButtonEnabled.hint": "Cuando hagas clic en la imagen de algún elemento, se enviará un mensaje de 'Better Rolls' al chat en vez del mensaje predeterminado. Se puede evitar manteniendo Alt al hacer clic.",
     "br5e.quickDefaultDescriptionEnabled.name": "Descripción en las Tiradas Rápidas. Habilitado por Defecto",
     "br5e.quickDefaultDescriptionEnabled.hint": "Si se habilita, las armas y herramientas mostrarán sus descripciones por defecto en las tiradas rápidas. Sólo afecta a nuevas armas y herramientas, ya que otros tipos de elementos ya tienen descripciones habilitadas por defecto.",
-    "br5e.defaultRollArt.name": "Imagen utilizada en tirada de Personaje",
-    "br5e.defaultRollArt.hint": "Determina qué arte se utiliza por defecto para las pruebas de habilidad y tiradas de salvación. Si no está disponible (o es el icono por defecto), se utilizará el otro icono en su lugar.",
     "br5e.damageContextEnabled.name": "Etiquetas de Contexto de Daño",
     "br5e.damageContextEnabled.hint": "Permite ingresar contexto para las etiquetas de daño, que preceden al tipo de daño. Solo funciona en Better Rolls.",
     "br5e.contextReplacesTitle.name": "Contexto Reemplaza la Etiqueta de Título",

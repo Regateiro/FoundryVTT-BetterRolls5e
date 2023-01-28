@@ -25,7 +25,7 @@ export class RollFields {
 	static constructHeaderData(options={}) {
 		const { item, slotLevel } = options;
 		const actor = options?.actor ?? item?.actor;
-		const img = options.img ?? item?.img ?? ActorUtils.getImage(actor);
+		const img = options.img ?? item?.img ?? actor.img;
 		let title = options.title ?? item?.name ?? actor?.name ?? '';
 		if (item?.type === "spell" && slotLevel && slotLevel != item.system.level) {
 			title += ` (${CONFIG.DND5E.spellLevels[slotLevel]})`;

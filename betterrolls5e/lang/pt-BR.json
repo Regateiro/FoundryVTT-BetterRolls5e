@@ -10,8 +10,6 @@
 	"br5e.imageButtonEnabled.hint": "Ao clicar na imagem de um item, envie uma mensagem de Rolagens Melhores para o chat ao invés da mensagem normal. Pode ser ignorado pressionando Alt ao clicar.",
 	"br5e.quickDefaultDescriptionEnabled.name": "Descrição em Rolagens Rápidas habilitados por padrão",
 	"br5e.quickDefaultDescriptionEnabled.hint": "Se ativado, armas e ferramentas terão suas descrições exibidas por padrão em Rolagens Rápidas. Afeta apenas novas armas e ferramentas, pois outros tipos de itens já têm descrições ativadas por padrão.",
-	"br5e.defaultRollArt.name": "Arte Padrão",
-	"br5e.defaultRollArt.hint": "Determina qual arte é usada por padrão para testes de atributo e salvaguardas. Se não estiver disponível (ou for o ícone padrão do homem misterioso), ele usará o outro ícone.",
 	"br5e.damageContextEnabled.name": "Rótulos de Contexto de Dano",
 	"br5e.damageContextEnabled.hint": "Permite inserir contexto para etiquetas de dano, que precedem o tipo de dano. Funciona apenas com Rolagens Melhores.",
 	"br5e.contextReplacesTitle.name": "Contexto substitui Rótulo de Título",

@@ -11,8 +11,6 @@
 	"br5e.imageButtonEnabled.hint": "Při kliknutí na obrázek předmětu se namísto normální zprávy v chatu vypíše zpráva Better Roll. Toto je možné obejít stisknutím klávesy Alt při kliknutí.",
 	"br5e.quickDefaultDescriptionEnabled.name": "Popisek u Rychlého Hodu Zapnut jako Výchozí",
 	"br5e.quickDefaultDescriptionEnabled.hint": "Pokud je zvoleno, zbraně a nářadí mají během rychlého hodu zobrazen svůj popisek. Aplikuje se pouze na nové zbraně a nářadí, jelikož ostatní typy předmětu mají zobrazení popisků již jako výchozí nastavení.",
-	"br5e.defaultRollArt.name": "Použít Výchozí Grafiku",
-	"br5e.defaultRollArt.hint": "Určuje výchozí grafiku u ověření vlastnosti a záchrannných hodů. Pokud ikona není k dispozici (nebo se jedná o výchozí ikonu tajemného muže), bude místo ni použita druhá možnost.",
 	"br5e.damageContextEnabled.name": "Kontextové Štítky Zranění",
 	"br5e.damageContextEnabled.hint": "Umožňuje pro štítky zranění vložit kontext, který bude předcházet typ zranění. Funguje pouze u Better Rolls.",
 	"br5e.contextReplacesTitle.name": "Kontext Nahrazuje Nadpis",

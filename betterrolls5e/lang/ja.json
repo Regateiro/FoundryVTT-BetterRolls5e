@@ -11,8 +11,6 @@
 	"br5e.imageButtonEnabled.hint": "アイテム画像をクリックしたとき、標準のロールの代わりにBetter Rollによって拡張されたクイックロールを表示します。Altキーを押しながらクリックすると、標準のロールが行えます。",
 	"br5e.quickDefaultDescriptionEnabled.name": "クイックロールに説明文を表示する",
 	"br5e.quickDefaultDescriptionEnabled.hint": "有効にすると、武器や道具の説明がクイックロールに表示されるようになります。ほかのアイテムタイプは標準で表示されるようになっているので、この設定が影響するのは新しい武器や道具のみです。",
-	"br5e.defaultRollArt.name": "能力値判定のアイコン",
-	"br5e.defaultRollArt.hint": "能力値判定とセーヴィング・スローで使用する画像を指定します。これが利用できない（または標準のミステリーマンアイコンの）場合は、代わりのアイコンを使用されます。",
 	"br5e.damageContextEnabled.name": "ダメージの補足欄",
 	"br5e.damageContextEnabled.hint": "アイテムのダメージ設定に、補足説明を入力するフィールドを追加します。これはクイックロールでのみ動作します。",
 	"br5e.contextReplacesTitle.name": "補足でダメージ効果を置き換える",

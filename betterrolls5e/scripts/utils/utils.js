@@ -363,24 +363,6 @@ export class ActorUtils {
 	}
 
 	/**
-	 * Returns the image to represent the actor. The result depends on BR settings.
-	 * @param {Actor} actor
-	 */
-	static getImage(actor) {
-		if (!actor) return null;
-
-		const actorImage = (actor.texture?.src && actor.texture.src !== CONST.DEFAULT_TOKEN && !actor.texture.src.includes("*")) ? actor.texture.src : false;
-		const tokenImage = actor.token?.texture?.src ? actor.token.texture.src : actor.token.texture.src;
-
-		switch(game.settings.get("betterrolls5e", "defaultRollArt")) {
-			case "actor":
-				return actorImage || tokenImage;
-			case "token":
-				return tokenImage || actorImage;
-		}
-	}
-
-	/**
 	 * Returns a roll object for a skill check
 	 * @param {Actor} actor
 	 * @param {string} skill

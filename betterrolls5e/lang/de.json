@@ -10,8 +10,6 @@
 	"br5e.imageButtonEnabled.hint": "Beim Klicken auf das Bild eines Elements eine \"Besser Würfeln\"-Nachricht im Chat anstelle der normalen Chat-Ausgabe ausgeben. Kann durch Halten der Alt-Taste beim Klicken umgangen werden.",
 	"br5e.quickDefaultDescriptionEnabled.name": "Schnellwürfeln-Beschreibung standardmäßig aktiviert",
 	"br5e.quickDefaultDescriptionEnabled.hint": "Wenn diese Option aktiviert ist, werden die Beschreibungen von Waffen und Werkzeugen standardmäßig beim Schnellwürfeln angezeigt. Betrifft nur neue Waffen und Werkzeuge, da bei anderen Gegenstandsarten die Beschreibungen bereits standardmäßig aktiviert sind.",
-	"br5e.defaultRollArt.name": "Benutze Standardbilder",
-	"br5e.defaultRollArt.hint": "Legt fest, welche Bilder standardmäßig für Attributsproben und Rettungswürfe verwendet werden. Wenn dieses nicht verfügbar ist (oder das standardmäßige Mystery-Man-Symbol ist), wird stattdessen das andere Symbol verwendet.",
 	"br5e.damageContextEnabled.name": "Beschriftungen von Schadenskontexten",
 	"br5e.damageContextEnabled.hint": "Ermöglicht die Eingabe des Kontexts für Schadensbeschriftungen, die der Schadensart vorausgehen. Funktioniert nur bei besseren Rollen.",
 	"br5e.contextReplacesTitle.name": "Kontext ersetzt Titelbeschriftung",
