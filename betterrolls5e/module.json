@@ -1,5 +1,5 @@
 {
-    "name": "betterrolls5e",
+    "id": "betterrolls5e-morb",
     "title": "Better Rolls for 5e",
     "description": "This module overhauls rolls for the D&D 5e system, allowing \"dual rolls\" for d20 rolls, buttons that support full output to chat, and customization for said outputs.",
     "authors": [
@@ -11,7 +11,7 @@
     ],
     "url": "https://github.com/RedReign/FoundryVTT-BetterRolls5e/tree/master/betterrolls5e",
     "flags": {},
-    "version": "2.0.3",
+    "version": "2.0.4",
     "minimumCoreVersion": "10",
     "compatibleCoreVersion": "10",
     "compatibility": {
@@ -95,7 +95,7 @@
     "dependencies": [],
     "socket": true,
     "manifest": "https://raw.githubusercontent.com/Regateiro/FoundryVTT-BetterRolls5e/master/betterrolls5e/module.json",
-    "download": "https://github.com/Regateiro/FoundryVTT-BetterRolls5e/releases/download/v2.0.3/module.zip",
+    "download": "https://github.com/Regateiro/FoundryVTT-BetterRolls5e/releases/download/v2.0.4/module.zip",
     "protected": false,
     "coreTranslation": false,
     "library": false
