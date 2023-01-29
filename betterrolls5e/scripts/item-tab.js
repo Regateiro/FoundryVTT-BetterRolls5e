@@ -71,10 +71,10 @@ export async function addBetterRollsContent(app, protoHtml) {
 	if (game.settings.get("betterrolls5e", "damageContextPlacement") !== "0") {
 		const damageRolls = html.find(".tab.details .damage-parts .damage-part input").toArray();
 		// Placeholder is either "Context" or "Label" depending on system settings
-		const placeholder = (game.settings.get("betterrolls5e", "contextReplacesDamage") ? "br5e.settings.label" : "br5e.settings.context").concat(" (BR)");
+		const placeholder = (game.settings.get("betterrolls5e", "contextReplacesDamage") ? "br5e.settings.label" : "br5e.settings.context");
 
 		damageRolls.filter((damageRoll) => damageRoll.name.includes("system.damage.parts")).forEach((damageRoll, i) => {
-			const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
+			const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder).concat(" (BR)")}" data-dtype="String" style="margin-left:5px;">`);
 			
 			damageRoll.after(contextField[0]);
 
