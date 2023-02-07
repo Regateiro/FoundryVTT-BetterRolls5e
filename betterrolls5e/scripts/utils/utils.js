@@ -509,6 +509,7 @@ export class ItemUtils {
 	static ensureFlags(item) {
 		const flags = this.createFlags(item);
 		if (!flags) return;
+		this.updateFlags(item, flags);
 		item.flags.betterRolls5e = flags;
 	}
 
@@ -545,6 +546,17 @@ export class ItemUtils {
 		}
 
 		return flags;
+	}
+
+	/**
+	 * Updates the flags that are assigned to the the item. Does not save to database.
+	 * @param {*} item The item property to be updated
+	 */
+	static updateFlags(item, flags) {
+		// Update context flags from ready set roll if the module is enabled
+		if(game.modules.get("ready-set-roll-5e")?.active) {
+			flags.quickDamage.context = item.flags.rsr5e.quickDamage.context;
+		}
 	}
 
 	static placeTemplate(item) {

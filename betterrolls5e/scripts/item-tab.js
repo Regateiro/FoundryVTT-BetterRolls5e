@@ -42,9 +42,6 @@ export async function addBetterRollsContent(app, protoHtml) {
 	// For items that have at least one way to consume something
 	const canConsume = hasQuantity || hasUses || hasResource || hasCharge;
 
-	// If Ready Set Roll module is enabled or not
-	const rsrEnabled = Boolean(game.modules.get("ready-set-roll-5e"));
-
 	const betterRollsTemplate = await renderTemplate("modules/betterrolls5e/templates/red-item-options.html", {
 		DND5E: CONFIG.DND5E,
 		item,
@@ -58,8 +55,7 @@ export async function addBetterRollsContent(app, protoHtml) {
 		flags: item.flags,
 		damageTypes: CONFIG.betterRolls5e.combinedDamageTypes,
 		altSecondaryEnabled,
-		itemHasTemplate: item.hasAreaTarget,
-		rsrEnabled
+		itemHasTemplate: item.hasAreaTarget
 	});
 
 	settingsContainer.append(betterRollsTemplate);
@@ -78,7 +74,7 @@ export async function addBetterRollsContent(app, protoHtml) {
 		const placeholder = (game.settings.get("betterrolls5e", "contextReplacesDamage") ? "br5e.settings.label" : "br5e.settings.context");
 
 		// Only add the context fields if the Ready Set Roll module is not installed
-		if(!rsrEnabled) {
+		if(!game.modules.get("ready-set-roll-5e")?.active) {
 			damageRolls.filter((damageRoll) => damageRoll.name.includes("system.damage.parts")).forEach((damageRoll, i) => {
 				const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
 				
@@ -109,4 +105,7 @@ export async function addBetterRollsContent(app, protoHtml) {
 	newSection.find("input[type=number]").change((evt) => activate = true);
 	newSection.find("input[type=checkbox]").change((evt) => activate = true);
 	newSection.find("select").change((evt) => activate = true);
+}
+
+export async function updateFlags(app, protoHtml) {
 }
