@@ -1151,8 +1151,8 @@ export class CustomItemRoll {
 					return "error";
 				}
 
-				spellLevel = spellFormData.level;
-				consume = Boolean(spellFormData.consumeSlot);
+				spellLevel = spellFormData.consumeSpellLevel;
+				consume = Boolean(spellFormData.consumeSpellSlot);
 				placeTemplate = Boolean(spellFormData.placeTemplate);
 			} catch(error) {
 				console.error(error);
@@ -1222,6 +1222,7 @@ export class CustomItemRoll {
 
 		// Identify what's being consumed. Note that ammo is consumed elsewhere
 		const consumeSpellLevel = this.params.consumeSpellLevel;
+		const consumeSpellSlot = this.params.slotLevel;
 		const consumeResource = hasResource && request.resource && itemData.consume.type !== "ammo";
 		const consumeUsage = request.use && hasUses;
 		const consumeQuantity = request.quantity || autoDestroy;
@@ -1240,7 +1241,7 @@ export class CustomItemRoll {
 
 		// Consume resources and spell slots
 		if (consumeResource || consumeSpellLevel) {
-			const updates = item._getUsageUpdates({ consumeResource, consumeSpellLevel });
+			const updates = item._getUsageUpdates({ consumeResource, consumeSpellLevel, consumeSpellSlot });
 			if (!updates) return "error";
 			mergeUpdates(updates);
 		}
