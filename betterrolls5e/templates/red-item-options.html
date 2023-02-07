@@ -198,6 +198,22 @@
 	</div>
 
 	<div class="form-group stacked">
+		{{#if rsrEnabled}}
+		{{#if flags.rsr5e.quickDamage}}
+		{{#each flags.rsr5e.quickDamage.value as |part i| }}
+		<label class="checkbox">
+			<input
+				type="checkbox"
+				name="flags.rsr5e.quickDamage.value.{{i}}"
+				value= "flags.rsr5e.quickDamage.value.{{i}}"
+				data-dtype="Boolean"
+				{{checked (lookup ../flags.rsr5e.quickDamage.value i)}}
+			/>
+			{{i}}: {{lookup ../flags.rsr5e.quickDamage.context i}} ({{lookup ../DND5E.damageTypes (lookup (lookup ../item.system.damage.parts i) 1)}})
+		</label>
+		{{/each}}
+		{{/if}}
+		{{else}}
 		{{#if flags.betterRolls5e.quickDamage}}
 		{{#each flags.betterRolls5e.quickDamage.value as |part i| }}
 		<label class="checkbox">
@@ -211,6 +227,7 @@
 			{{i}}: {{lookup ../flags.betterRolls5e.quickDamage.context i}} ({{lookup ../DND5E.damageTypes (lookup (lookup ../item.system.damage.parts i) 1)}})
 		</label>
 		{{/each}}
+		{{/if}}
 		{{/if}}
 	</div>
 
@@ -415,6 +432,22 @@
 
 	</div>
 	<div class="form-group stacked">
+		{{#if rsrEnabled}}
+		{{#if flags.rsr5e.quickDamage}}
+		{{#each flags.rsr5e.quickDamage.altValue as |part i| }}
+		<label class="checkbox">
+			<input
+				type="checkbox"
+				name="flags.rsr5e.quickDamage.altValue.{{i}}"
+				value= "flags.rsr5e.quickDamage.altValue.{{i}}"
+				data-dtype="Boolean"
+				{{checked (lookup ../flags.rsr5e.quickDamage.altValue i)}}
+			/>
+			{{i}}: {{lookup ../flags.rsr5e.quickDamage.context i}} ({{lookup ../DND5E.damageTypes (lookup (lookup ../item.system.damage.parts i) 1)}})
+		</label>
+		{{/each}}
+		{{/if}}
+		{{else}}
 		{{#if flags.betterRolls5e.quickDamage}}
 		{{#each flags.betterRolls5e.quickDamage.altValue as |part i| }}
 		<label class="checkbox">
@@ -428,6 +461,7 @@
 			{{i}}: {{lookup ../flags.betterRolls5e.quickDamage.context i}} ({{lookup ../DND5E.damageTypes (lookup (lookup ../item.system.damage.parts i) 1)}})
 		</label>
 		{{/each}}
+		{{/if}}
 		{{/if}}
 	</div>
 	{{/if}}

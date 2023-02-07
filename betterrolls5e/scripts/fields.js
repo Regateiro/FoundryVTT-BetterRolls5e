@@ -236,7 +236,7 @@ export class RollFields {
 		// If no formula was given, derive from the item
 		if (!formula && item) {
 			const itemData = item.system;
-			const flags = item.flags.betterRolls5e;
+			const flags = Boolean(game.modules.get("ready-set-roll-5e")) ? item.flags.rsr5e : item.flags.betterRolls5e;
 
 			if (damageIndex === "other") {
 				formula = itemData.formula;

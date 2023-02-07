@@ -42,6 +42,9 @@ export async function addBetterRollsContent(app, protoHtml) {
 	// For items that have at least one way to consume something
 	const canConsume = hasQuantity || hasUses || hasResource || hasCharge;
 
+	// If Ready Set Roll module is enabled or not
+	const rsrEnabled = Boolean(game.modules.get("ready-set-roll-5e"));
+
 	const betterRollsTemplate = await renderTemplate("modules/betterrolls5e/templates/red-item-options.html", {
 		DND5E: CONFIG.DND5E,
 		item,
@@ -55,7 +58,8 @@ export async function addBetterRollsContent(app, protoHtml) {
 		flags: item.flags,
 		damageTypes: CONFIG.betterRolls5e.combinedDamageTypes,
 		altSecondaryEnabled,
-		itemHasTemplate: item.hasAreaTarget
+		itemHasTemplate: item.hasAreaTarget,
+		rsrEnabled
 	});
 
 	settingsContainer.append(betterRollsTemplate);
@@ -73,26 +77,29 @@ export async function addBetterRollsContent(app, protoHtml) {
 		// Placeholder is either "Context" or "Label" depending on system settings
 		const placeholder = (game.settings.get("betterrolls5e", "contextReplacesDamage") ? "br5e.settings.label" : "br5e.settings.context");
 
-		damageRolls.filter((damageRoll) => damageRoll.name.includes("system.damage.parts")).forEach((damageRoll, i) => {
-			const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder).concat(" (BR)")}" data-dtype="String" style="margin-left:5px;">`);
-			
-			damageRoll.after(contextField[0]);
+		// Only add the context fields if the Ready Set Roll module is not installed
+		if(!rsrEnabled) {
+			damageRolls.filter((damageRoll) => damageRoll.name.includes("system.damage.parts")).forEach((damageRoll, i) => {
+				const contextField = $(`<input type="text" name="flags.betterRolls5e.quickDamage.context.${i}" value="${(item.flags.betterRolls5e.quickDamage.context[i] || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
+				
+				damageRoll.after(contextField[0]);
 
-			// Add event listener to delete context when damage is deleted
-			$($($(damageRoll)[0].parentElement).find(`a.delete-damage`)).click(async _ => {
-				const contextFlags = Object.values(item.flags.betterRolls5e.quickDamage.context);
-				contextFlags.splice(i, 1);
-				item.update({
-					[`flags.betterRolls5e.quickDamage.context`]: contextFlags,
+				// Add event listener to delete context when damage is deleted
+				$($($(damageRoll)[0].parentElement).find(`a.delete-damage`)).click(async _ => {
+					const contextFlags = Object.values(item.flags.betterRolls5e.quickDamage.context);
+					contextFlags.splice(i, 1);
+					item.update({
+						[`flags.betterRolls5e.quickDamage.context`]: contextFlags,
+					});
 				});
 			});
-		});
 
-		// Add context field for Other Formula field
-		if (getProperty(item, "flags.betterRolls5e.quickOther")) {
-			const otherRoll = html.find(`.tab.details .form-fields input[name="data.formula"]`);
-			const otherContextField = $(`<input type="text" name="flags.betterRolls5e.quickOther.context" value="${(item.flags.betterRolls5e.quickOther.context || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
-			if (otherRoll[0]) { otherRoll[0].after(otherContextField[0]); }
+			// Add context field for Other Formula field
+			if (getProperty(item, "flags.betterRolls5e.quickOther")) {
+				const otherRoll = html.find(`.tab.details .form-fields input[name="data.formula"]`);
+				const otherContextField = $(`<input type="text" name="flags.betterRolls5e.quickOther.context" value="${(item.flags.betterRolls5e.quickOther.context || "")}" placeholder="${i18n(placeholder)}" data-dtype="String" style="margin-left:5px;">`);
+				if (otherRoll[0]) { otherRoll[0].after(otherContextField[0]); }
+			}
 		}
 	}
 
